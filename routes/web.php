@@ -2,13 +2,35 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-// Rute utama (Halaman Welcome)
+// Halaman utama (Welcome)
 Route::get('/', function () {
     return Inertia::render('Welcome');
-})->name('home'); // Kita beri nama 'home'
+})->name('home');
 
-// Rute baru untuk uji coba Ziggy
-Route::get('/tes-parameter/{id}', function ($id) {
-    return "Berhasil masuk ke rute testing dengan ID: " . $id;
-})->name('testing.route'); // Kita beri nama 'testing.route'
+// Rute Tampilan Login
+Route::get('/login', function () {
+    return Inertia::render('Auth/Login');
+})->name('login');
+
+// Rute Aksi Post Login
+Route::post('/login', function (Request $request) {
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
+
+    if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $request->session()->regenerate();
+
+        // Arahkan ke halaman utama atau dashboard setelah sukses login
+        return redirect()->intended('/');
+    }
+
+    // Jika gagal, kembalikan dengan error khusus field email
+    return back()->withErrors([
+        'email' => 'Email atau password yang Anda masukkan salah.',
+    ]);
+});

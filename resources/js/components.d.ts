@@ -13,10 +13,16 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     VanButton: typeof import('vant/es')['Button']
+    VanCheckbox: typeof import('vant/es')['Checkbox']
+    VanField: typeof import('vant/es')['Field']
+    VanForm: typeof import('vant/es')['Form']
   }
 }
 
 // For TSX support
 declare global {
   const VanButton: typeof import('vant/es')['Button']
+  const VanCheckbox: typeof import('vant/es')['Checkbox']
+  const VanField: typeof import('vant/es')['Field']
+  const VanForm: typeof import('vant/es')['Form']
 }

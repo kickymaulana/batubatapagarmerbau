@@ -1,9 +1,18 @@
 @import 'tailwindcss';
 
+/* Tambahkan baris ini agar Tailwind v4 memindai semua komponen Vue kamu */
+@source '../js/**/*.vue';
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Tambahan reset global opsional agar komponen Vant menyatu dengan tema Tailwind */
+body {
+  font-family: var(--font-sans);
+  background-color: #f8fafc; /* slate-50 */
 }

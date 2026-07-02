@@ -2,12 +2,7 @@
 declare module 'ziggy-js' {
   interface RouteList {
     "home": [],
-    "testing.route": [
-        {
-            "name": "id",
-            "required": true
-        }
-    ],
+    "login": [],
     "storage.local": [
         {
             "name": "path",

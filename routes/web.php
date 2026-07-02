@@ -1,9 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia; // 1. Pastikan import class Inertia di sini
+use Inertia\Inertia;
 
+// Rute utama (Halaman Welcome)
 Route::get('/', function () {
-    // 2. Render halaman Welcome.vue yang ada di folder resources/js/Pages/
     return Inertia::render('Welcome');
-});
+})->name('home'); // Kita beri nama 'home'
+
+// Rute baru untuk uji coba Ziggy
+Route::get('/tes-parameter/{id}', function ($id) {
+    return "Berhasil masuk ke rute testing dengan ID: " . $id;
+})->name('testing.route'); // Kita beri nama 'testing.route'

@@ -14,5 +14,11 @@
       "@/*": ["resources/js/*"]
     }
   },
-  "include": ["resources/js/**/*.ts", "resources/js/**/*.d.ts", "resources/js/**/*.vue"]
+  "include": [
+      "resources/js/**/*.ts",
+      "resources/js/**/*.d.ts",
+      "resources/js/**/*.vue",
+      "resources/js/auto-imports.d.ts", // Tambahkan ini jika belum ter-cover
+      "resources/js/components.d.ts"
+  ]
 }

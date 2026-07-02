@@ -5,6 +5,10 @@ import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import inertia from '@inertiajs/vite';
 import path from 'path';
+// 1. Import plugin auto-import dan resolver Vant
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite';
+import { VantResolver } from '@vant/auto-import-resolver';
 
 export default defineConfig({
     plugins: [
@@ -21,6 +25,18 @@ export default defineConfig({
         vue(),
         inertia(),
         tailwindcss(),
+
+        // 2. Tambahkan konfigurasi AutoImport untuk fungsi/API Vant (seperti showToast)
+        AutoImport({
+            resolvers: [VantResolver()],
+            dts: 'resources/js/auto-imports.d.ts', // Otomatis generate file tipe data
+        }),
+
+        // 3. Tambahkan konfigurasi Components untuk komponen Vue Vant (seperti <van-button>)
+        Components({
+            resolvers: [VantResolver()],
+            dts: 'resources/js/components.d.ts', // Otomatis generate file tipe data
+        }),
     ],
     server: {
         watch: {

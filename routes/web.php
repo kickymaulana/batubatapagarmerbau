@@ -9,6 +9,9 @@ use App\Models\Syarat;
 use App\Models\Permohonan;
 use App\Models\DetailPermohonan;
 
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 // Rute Autentikasi (Tetap sama seperti kode lamamu)
 Route::get('/login', function () { return Inertia::render('Auth/Login'); })->name('login');
 Route::post('/login', function (Request $request) {

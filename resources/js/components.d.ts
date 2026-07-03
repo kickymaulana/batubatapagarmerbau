@@ -16,6 +16,7 @@ declare module 'vue' {
     VanCheckbox: typeof import('vant/es')['Checkbox']
     VanField: typeof import('vant/es')['Field']
     VanForm: typeof import('vant/es')['Form']
+    VanPopup: typeof import('vant/es')['Popup']
   }
 }
 
@@ -25,4 +26,5 @@ declare global {
   const VanCheckbox: typeof import('vant/es')['Checkbox']
   const VanField: typeof import('vant/es')['Field']
   const VanForm: typeof import('vant/es')['Form']
+  const VanPopup: typeof import('vant/es')['Popup']
 }

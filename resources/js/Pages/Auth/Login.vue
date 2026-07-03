@@ -1,5 +1,8 @@
+
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3'
+import { showToast } from 'vant'
+import 'vant/es/toast/style'
 
 defineProps<{
   errors: {
@@ -8,6 +11,9 @@ defineProps<{
   }
 }>()
 
+// Ganti inject dengan akses global window.route
+const route = (window as any).route
+
 const form = useForm({
   email: '',
   password: '',
@@ -15,7 +21,10 @@ const form = useForm({
 })
 
 const onSubmit = () => {
-  form.post(route('login'), {
+  // Pastikan route tersedia, jika tidak gunakan path absolut sebagai fallback
+  const urlTujuan = route ? route('login') : '/batubatapagarmerbau/public/login'
+
+  form.post(urlTujuan, {
     onFinish: () => {
       form.password = ''
     },
@@ -28,19 +37,17 @@ const onSubmit = () => {
   })
 }
 </script>
-
 <template>
   <div class="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-orange-50/40 to-slate-100 px-4 py-12 sm:px-6 lg:px-8">
 
-    <!-- Dekorasi Background Modern (Gradasi Oranye) -->
+    <!-- Dekorasi Lingkaran Abstrak Modern di Latar Belakang -->
     <div class="absolute top-0 left-0 -translate-x-12 -translate-y-12 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-0 right-0 translate-x-12 translate-y-12 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
     <div class="w-full max-w-md space-y-6 z-10">
 
-      <!-- Logo & Branding Instansi -->
+      <!-- Logo & Branding Instansi Kecamatan -->
       <div class="text-center space-y-2">
-        <!-- Badge Logo diubah ke Gradasi Oranye Semangka/Amber -->
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 shadow-lg shadow-orange-500/20 text-white font-black text-2xl tracking-wider">
           BB
         </div>
@@ -48,19 +55,18 @@ const onSubmit = () => {
           <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             BATU BATA
           </h1>
-          <!-- Text Sub-Header Oranye -->
           <p class="text-xs font-bold uppercase tracking-widest text-orange-600 mt-1">
             Kecamatan Pagar Merbau
           </p>
         </div>
 
-        <!-- Slogan -->
+        <!-- Slogan Kepanjangan Aplikasi -->
         <p class="text-xs text-slate-500 max-w-xs mx-auto pt-1 italic border-t border-slate-200/60 leading-relaxed">
           "Bersama Aparatur Tertib Urusan Berkas Aman, Transparan dan Akurat"
         </p>
       </div>
 
-      <!-- Kartu Form Utama -->
+      <!-- Kartu Form Login Utama -->
       <div class="bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-xl shadow-slate-200/40 border border-white">
         <div class="mb-6">
           <h3 class="text-lg font-bold text-slate-800">Login Masyarakat / Petugas</h3>
@@ -69,7 +75,7 @@ const onSubmit = () => {
 
         <van-form @submit="onSubmit" class="space-y-5">
 
-          <!-- Input Email -->
+          <!-- Input Alamat Email -->
           <div class="space-y-1">
             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider pl-1">Alamat Email</label>
             <van-field
@@ -84,7 +90,7 @@ const onSubmit = () => {
             />
           </div>
 
-          <!-- Input Password -->
+          <!-- Input Kata Sandi -->
           <div class="space-y-1">
             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider pl-1">Kata Sandi</label>
             <van-field
@@ -99,14 +105,14 @@ const onSubmit = () => {
             />
           </div>
 
-          <!-- Remember Me -->
+          <!-- Fitur Ingat Sesi (Remember Me) -->
           <div class="flex items-center justify-between pt-1 px-1">
             <van-checkbox v-model="form.remember" shape="square" icon-size="16px" checked-color="#ea580c" class="text-xs text-slate-600 font-medium">
               Ingat sesi masuk saya
             </van-checkbox>
           </div>
 
-          <!-- Tombol Submit Premium Tema Oranye -->
+          <!-- Tombol Aksi Submit Form -->
           <div class="pt-2">
             <van-button
               round
@@ -124,7 +130,7 @@ const onSubmit = () => {
         </van-form>
       </div>
 
-      <!-- Footer Info -->
+      <!-- Footer Hak Cipta -->
       <div class="text-center text-xs text-slate-400">
         &copy; 2026 Pagar Merbau Digital. All rights reserved.
       </div>
@@ -134,6 +140,7 @@ const onSubmit = () => {
 </template>
 
 <style scoped>
+/* Reset bayangan default komponen Vant agar rapi menyatu dengan border Tailwind */
 :deep(.van-field) {
   box-shadow: none !important;
 }
@@ -142,8 +149,8 @@ const onSubmit = () => {
   margin-top: 4px;
   padding-left: 4px;
 }
-/* Menyelaraskan warna ikon fokus internal Vant ke warna oranye */
+/* Mengubah rona warna ikon bawaan Vant menjadi oranye ketika form sedang aktif fokus */
 :deep(.van-field:focus-within .van-icon) {
-  color: #ea580c !important; /* orange-600 */
+  color: #ea580c !important;
 }
 </style>

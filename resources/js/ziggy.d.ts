@@ -5,7 +5,7 @@ declare module 'ziggy-js' {
     "logout": [],
     "dashboard": [],
     "permohonan.store": [],
-    "permohonan.proses-pusat": [
+    "permohonan.siak": [
         {
             "name": "id",
             "required": true
@@ -17,6 +17,7 @@ declare module 'ziggy-js' {
             "required": true
         }
     ],
+    "layanan.store": [],
     "storage.local": [
         {
             "name": "path",

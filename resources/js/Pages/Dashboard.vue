@@ -107,6 +107,15 @@ const simpanLayananBaru = () => {
   })
 }
 
+const getStorageUrl = (path: string | null) => {
+  if (!path) return ''
+  if (path.startsWith('http://') || path.startsWith('https://')) return path
+  const cleanPath = path.startsWith('/') ? path.substring(1) : path
+  const baseUrl = (window as any).Ziggy?.url || ''
+  const prefix = baseUrl ? (baseUrl.endsWith('/') ? baseUrl : baseUrl + '/') : '/'
+  return prefix + cleanPath
+}
+
 const logout = () => router.post(route('logout'))
 </script>
 
@@ -166,7 +175,7 @@ const logout = () => router.post(route('logout'))
                 <td class="p-4">
                   <div class="flex flex-col gap-1">
                     <div v-for="detail in item.details" :key="detail.id" class="text-xs">
-                      <a :href="detail.file_foto_syarat" target="_blank" class="text-orange-600 hover:underline">
+                      <a :href="getStorageUrl(detail.file_foto_syarat)" target="_blank" class="text-orange-600 hover:underline">
                         📷 {{ detail.syarat.nama_syarat }}
                       </a>
                     </div>
@@ -186,7 +195,7 @@ const logout = () => router.post(route('logout'))
                   </div>
                   <!-- Aksi Warga (Download PDF Resmi) -->
                   <div v-else>
-                    <a v-if="item.status === 'selesai' && item.file_hasil_pdf" :href="item.file_hasil_pdf" target="_blank" class="inline-flex items-center gap-1 text-xs bg-green-600 text-white font-bold py-1.5 px-3 rounded-lg shadow-sm hover:bg-green-700">
+                    <a v-if="item.status === 'selesai' && item.file_hasil_pdf" :href="getStorageUrl(item.file_hasil_pdf)" target="_blank" class="inline-flex items-center gap-1 text-xs bg-green-600 text-white font-bold py-1.5 px-3 rounded-lg shadow-sm hover:bg-green-700">
                       📥 Download PDF Dokumen Resmi
                     </a>
                     <span v-else class="text-xs text-slate-400 italic">Menunggu verifikasi & proses SIAK petugas</span>

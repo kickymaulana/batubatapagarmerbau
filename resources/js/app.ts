@@ -1,8 +1,11 @@
 import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/vue3'
-import { ZiggyVue } from 'ziggy-js'
+import { ZiggyVue, route } from 'ziggy-js'
 import { Ziggy } from './ziggy.js'
 import { Toast } from 'vant'
+
+(window as any).Ziggy = Ziggy;
+(window as any).route = route;
 
 createInertiaApp({
     withApp(app) {
@@ -11,3 +14,4 @@ createInertiaApp({
         app.use(Toast)
     },
 })
+

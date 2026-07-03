@@ -3,6 +3,7 @@
 import { useForm } from '@inertiajs/vue3'
 import { showToast } from 'vant'
 import 'vant/es/toast/style'
+import logoUrl from '../../../img/logo.jpeg'
 
 defineProps<{
   errors: {
@@ -48,8 +49,8 @@ const onSubmit = () => {
 
       <!-- Logo & Branding Instansi Kecamatan -->
       <div class="text-center space-y-2">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 shadow-lg shadow-orange-500/20 text-white font-black text-2xl tracking-wider">
-          BB
+        <div class="inline-flex items-center justify-center w-24 h-24 rounded-full overflow-hidden bg-white shadow-xl shadow-orange-500/10 border-2 border-orange-500/20 p-1 mx-auto transition-transform duration-500 hover:scale-105">
+          <img :src="logoUrl" alt="Logo Kecamatan Pagar Merbau" class="w-full h-full object-contain rounded-full" />
         </div>
         <div>
           <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">

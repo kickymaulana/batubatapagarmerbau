@@ -116,6 +116,54 @@ const getStorageUrl = (path: string | null) => {
   return prefix + cleanPath
 }
 
+// --- ADMIN EDIT LAYANAN ---
+const showFormLayananEdit = ref(false)
+const editLayananId = ref<number | null>(null)
+const formLayananEdit = useForm({
+  nama_layanan: '',
+  deskripsi: '',
+  syarats: [] as string[]
+})
+
+const openEditLayanan = (layanan: any) => {
+  editLayananId.value = layanan.id
+  formLayananEdit.nama_layanan = layanan.nama_layanan
+  formLayananEdit.deskripsi = layanan.deskripsi
+  formLayananEdit.syarats = layanan.syarats.map((s: any) => s.nama_syarat)
+  if (formLayananEdit.syarats.length === 0) formLayananEdit.syarats = ['']
+  showFormLayananEdit.value = true
+}
+
+const tambahFieldSyaratEdit = () => formLayananEdit.syarats.push('')
+
+const simpanEditLayanan = () => {
+  if (!editLayananId.value) return
+  formLayananEdit.put(route('layanan.update', { id: editLayananId.value }), {
+    onSuccess: () => {
+      showFormLayananEdit.value = false
+      editLayananId.value = null
+      formLayananEdit.reset()
+      showToast('Layanan berhasil diperbarui!')
+    }
+  })
+}
+
+const hapusLayanan = (id: number) => {
+  if (confirm('Yakin ingin menghapus layanan ini? Semua syarat terkait juga akan dihapus.')) {
+    router.delete(route('layanan.destroy', { id }), {
+      onSuccess: () => showToast('Layanan berhasil dihapus!')
+    })
+  }
+}
+
+const hapusSyarat = (id: number) => {
+  if (confirm('Yakin ingin menghapus syarat ini?')) {
+    router.delete(route('syarat.destroy', { id }), {
+      onSuccess: () => showToast('Syarat berhasil dihapus!')
+    })
+  }
+}
+
 const logout = () => router.post(route('logout'))
 </script>
 
@@ -150,6 +198,35 @@ const logout = () => router.post(route('logout'))
       <div v-if="auth.isAdmin" class="bg-white p-4 rounded-xl border border-dashed border-slate-300 flex justify-between items-center">
         <span class="text-xs text-slate-500 font-medium">Pengaturan Layanan Dinas Kecamatan:</span>
         <van-button size="small" type="warning" class="rounded-lg" icon="setting-o" @click="showFormLayananBaru = true">Tambah Master Layanan & Syarat</van-button>
+      </div>
+
+      <!-- ADMIN: DAFTAR LAYANAN & SYARAT (CRUD) -->
+      <div v-if="auth.isAdmin && layanans.length > 0" class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+        <div class="p-4 bg-slate-50 font-bold text-sm border-b flex justify-between items-center">
+          <span>Daftar Master Layanan & Syarat</span>
+          <span class="text-xs text-slate-400 font-normal">{{ layanans.length }} layanan</span>
+        </div>
+        <div class="divide-y">
+          <div v-for="layanan in layanans" :key="layanan.id" class="p-4 hover:bg-slate-50/50">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <h4 class="font-bold text-slate-800 text-sm">{{ layanan.nama_layanan }}</h4>
+                <p v-if="layanan.deskripsi" class="text-xs text-slate-400 mt-0.5">{{ layanan.deskripsi }}</p>
+              </div>
+              <div class="flex gap-2 shrink-0 ml-4">
+                <van-button size="small" plain class="!text-blue-600 !border-blue-300 rounded-lg text-xs" @click="openEditLayanan(layanan)">Edit</van-button>
+                <van-button size="small" plain class="!text-red-500 !border-red-300 rounded-lg text-xs" @click="hapusLayanan(layanan.id)">Hapus</van-button>
+              </div>
+            </div>
+            <div v-if="layanan.syarats.length > 0" class="mt-2 flex flex-wrap gap-1.5">
+              <span v-for="syarat in layanan.syarats" :key="syarat.id" class="inline-flex items-center gap-1 text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full">
+                {{ syarat.nama_syarat }}
+                <button @click="hapusSyarat(syarat.id)" class="text-red-400 hover:text-red-600 font-bold leading-none ml-0.5">&times;</button>
+              </span>
+            </div>
+            <p v-else class="text-xs text-slate-400 italic mt-2">Tidak ada syarat</p>
+          </div>
+        </div>
       </div>
 
       <!-- TABEL MONITORING UTAMA (WARGA & ADMIN) -->
@@ -262,6 +339,22 @@ const logout = () => router.post(route('logout'))
           <button type="button" @click="tambahFieldSyarat" class="text-xs text-blue-600 font-semibold">+ Tambah Baris Syarat</button>
         </div>
         <van-button block type="warning" class="rounded-xl font-bold mt-2" @click="simpanLayananBaru">Simpan Konfigurasi Layanan</van-button>
+      </van-popup>
+
+      <!-- POPUP ADMIN: EDIT MASTER LAYANAN -->
+      <van-popup v-model:show="showFormLayananEdit" position="center" round class="p-5 w-[90%] max-w-md space-y-3">
+        <h3 class="text-sm font-bold">Edit Master Layanan</h3>
+        <input v-model="formLayananEdit.nama_layanan" type="text" placeholder="Nama Layanan" class="w-full text-xs p-2 border rounded-lg outline-none"/>
+        <input v-model="formLayananEdit.deskripsi" type="text" placeholder="Deskripsi Singkat" class="w-full text-xs p-2 border rounded-lg outline-none"/>
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-slate-500">Syarat-Syarat Berkas:</label>
+          <div v-for="(syarat, index) in formLayananEdit.syarats" :key="index" class="flex gap-2 mb-1">
+            <input v-model="formLayananEdit.syarats[index]" type="text" placeholder="Nama Syarat" class="w-full text-xs p-2 border rounded-lg outline-none"/>
+          </div>
+          <button type="button" @click="tambahFieldSyaratEdit" class="text-xs text-blue-600 font-semibold">+ Tambah Baris Syarat</button>
+        </div>
+        <van-button block type="warning" class="rounded-xl font-bold mt-2" :loading="formLayananEdit.processing" @click="simpanEditLayanan">Simpan Perubahan</van-button>
       </van-popup>
 
     </main>

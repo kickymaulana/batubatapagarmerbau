@@ -124,7 +124,7 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->back();
     })->name('permohonan.selesai');
 
-    // ADMIN CRUD LAYANAN BARU (Dinamis Tambah/Hapus Layanan & Syarat)
+    // ADMIN CRUD LAYANAN (Tambah / Edit / Hapus Layanan & Syarat)
     Route::post('/layanan/store', function (Request $request) {
         $request->validate([
             'nama_layanan' => 'required|string',
@@ -139,4 +139,40 @@ Route::middleware(['auth'])->group(function () {
         }
         return redirect()->back();
     })->name('layanan.store');
+
+    Route::put('/layanan/{id}', function (Request $request, $id) {
+        $layanan = Layanan::findOrFail($id);
+        $request->validate([
+            'nama_layanan' => 'required|string',
+        ]);
+
+        $layanan->update([
+            'nama_layanan' => $request->nama_layanan,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        // Hapus syarat lama, ganti dengan yang baru
+        if ($request->has('syarats')) {
+            $layanan->syarats()->delete();
+            foreach ($request->syarats as $namaSyarat) {
+                if (!empty($namaSyarat)) {
+                    Syarat::create(['layanan_id' => $layanan->id, 'nama_syarat' => $namaSyarat]);
+                }
+            }
+        }
+
+        return redirect()->back();
+    })->name('layanan.update');
+
+    Route::delete('/layanan/{id}', function ($id) {
+        $layanan = Layanan::findOrFail($id);
+        $layanan->syarats()->delete();
+        $layanan->delete();
+        return redirect()->back();
+    })->name('layanan.destroy');
+
+    Route::delete('/syarat/{id}', function ($id) {
+        Syarat::findOrFail($id)->delete();
+        return redirect()->back();
+    })->name('syarat.destroy');
 });

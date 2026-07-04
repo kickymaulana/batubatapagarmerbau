@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\User;
 use App\Models\Layanan;
 use App\Models\Syarat;
 use App\Models\Permohonan;
@@ -12,8 +13,27 @@ use App\Models\DetailPermohonan;
 Route::get('/', function () {
     return redirect()->route('login');
 });
-// Rute Autentikasi (Tetap sama seperti kode lamamu)
+// Rute Autentikasi
 Route::get('/login', function () { return Inertia::render('Auth/Login'); })->name('login');
+Route::get('/register', function () { return Inertia::render('Auth/Register'); })->name('register');
+Route::post('/register', function (Request $request) {
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:8|confirmed',
+    ]);
+
+    $user = User::create([
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'password' => $data['password'],
+    ]);
+
+    Auth::login($user);
+    $request->session()->regenerate();
+
+    return redirect('/dashboard');
+});
 Route::post('/login', function (Request $request) {
     $credentials = $request->validate(['email' => 'required|email', 'password' => 'required']);
     if (Auth::attempt($credentials, $request->boolean('remember'))) {
